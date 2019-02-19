@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% if title %}
+    <title>Microblog- {{ title }}</title>
+    {% else %}
+    <title>Microblog</title>
+    {% endif %}
+</head>
+<body>
+    {% with messages = get_flashed_messages() %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endwith %}
+    {% block content %} {% endblock %}
+</body>
+</html>
