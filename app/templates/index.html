@@ -1,27 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <form action="" method ="POST" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.username(size=64) }}
-            {% for error in errors %}
-                <span style = "color: red;">{{ error }}</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.password(size=64) }}
-            {% for error in errors %}
-                <span style = "color: red;">{{ error }}</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.remember_me }}
-            {{ form.remember_me.label }}
-        </p>
-        <p>
-            {{ form.submit }}
-        </p>
-    </form>
-
+    <h1>Hey, {{ current_user.username }}</h1>
+    <hr>
+    {% for post in posts %}
+        {% include '_post.html' %}
+    {% endfor %}
 {% endblock %}

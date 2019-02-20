@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <table>
+         <tr>
+            <td> <img src = "{{ user.avatar(64) }}"> </td>
+            <td>
+                <h3>{{ user.username }}</h3>
+                {% if user.last_seen %}
+                    Last seen on: {{ user.last_seen }}
+                {% endif %}
+                {% if user.about_me %}
+                    <p>{{ user.about_me }}</p>
+                {% endif %}
+
+            </td>
+        </tr>
+    </table>
+    <hr>
+    {% for post in posts %}
+        {% include '_post.html' %}
+    {% endfor %}
+{% endblock %}
