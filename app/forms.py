@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
+from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, Length
 from app.models import User
 
 
@@ -29,3 +29,22 @@ class RegistrationForm(FlaskForm):
 		email = User.query.filter_by(email=email.data).first()
 		if email is not None:
 			raise ValidationError('Email already registered. Please try and login')
+
+
+class EditProfileForm(FlaskForm):
+	username = StringField('Username', validators=[DataRequired()], render_kw={"placeholder": "Username"})
+	about_me = TextAreaField('About me', validators=[Length(min=0, max=140)], render_kw={"placeholder": "About Me"})
+	submit = SubmitField('Submit')
+
+	def __init__(self, original_username, *args, **kwargs):
+		print("original_username: ", original_username)
+		super().__init__(*args, **kwargs)
+		self.original_username = original_username
+		print("self.original_username: ", self.original_username)
+
+	def validate_username(self, username):
+		if username.data != self.original_username:
+			print("Username: ", username, "username.data: ", username.data, "self.username.data: ", self.username.data)
+			user = User.query.filter_by(username=username.data).first()
+			if user is not None:
+				raise ValidationError('Please use  a different username')

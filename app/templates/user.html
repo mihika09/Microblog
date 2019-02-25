@@ -2,8 +2,10 @@
 
 {% block content %}
     <table>
-         <tr>
-            <td> <img src = "{{ user.avatar(64) }}"> </td>
+         <tr valign="top">
+            <td> <img src = "{{ user.avatar(128) }}"> </td>
+            <td></td>
+            <td></td>
             <td>
                 <h3>{{ user.username }}</h3>
                 {% if user.last_seen %}
@@ -12,7 +14,9 @@
                 {% if user.about_me %}
                     <p>{{ user.about_me }}</p>
                 {% endif %}
-
+                {% if user.username == current_user.username %}
+                <p><a href = "{{ url_for('edit_profile') }}">Edit your profile</a></p>
+                {% endif %}
             </td>
         </tr>
     </table>
