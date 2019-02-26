@@ -16,7 +16,7 @@ class User(UserMixin, db.Model):
 	password = db.Column(db.String(64), unique=True, index=True)
 	about_me = db.Column(db.String(140))
 	last_seen = db.Column(db.DateTime, default=datetime.utcnow)
-	db.relationship('Post', backref='author', lazy='dynamic')
+	posts = db.relationship('Post', backref='author', lazy='dynamic')
 	followed = db.relationship('User', secondary=followers, primaryjoin=(followers.c.follower_id == id), secondaryjoin=(
 		followers.c.followed_id == id), backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
 
@@ -35,7 +35,7 @@ class User(UserMixin, db.Model):
 		return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(digest, size)
 
 	def is_following(self, user):
-		return self.followed.filter(followers.c.followed_id == user.id).count()>0
+		return self.followed.filter(followers.c.followed_id == user.id).count() > 0
 
 	def follow(self, user):
 		if not self.is_following(user):
@@ -52,6 +52,11 @@ class User(UserMixin, db.Model):
 		return followed.union(own).order_by(Post.timestamp.desc())
 
 
+@login.user_loader
+def load_user(id):
+	return User.query.get(int(id))
+
+
 class Post(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	body = db.Column(db.String(140))
@@ -59,9 +64,4 @@ class Post(db.Model):
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 	def __repr__(self):
-		return '<User {}>'.format(self.body)
-
-
-@login.user_loader
-def load_user(id):
-	return User.query.get(int(id))
+		return '<Post {}>'.format(self.body)

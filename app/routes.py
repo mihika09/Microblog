@@ -1,7 +1,7 @@
 from app import app
 from flask import flash, redirect, render_template, url_for, request
-from app.forms import LoginForm, RegistrationForm, EditProfileForm
-from app.models import User
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm
+from app.models import User, Post
 from app import db
 from flask_login import login_required, login_user, logout_user, current_user
 from werkzeug.urls import url_parse
@@ -19,12 +19,21 @@ def before_request():
 @app.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
-	user = User.query.filter_by(username=current_user.username).first_or_404()
-	posts = [
-		{"author": user, "body": "Test Post 1"},
-		{"author": user, "body": "Test Post 2"}
-	]
-	return render_template('index.html', title="Main Page", posts=posts)
+	# user = User.query.filter_by(username=current_user.username).first_or_404()
+	form = PostForm()
+	page = request.args.get('page', 1, type=int)
+	if form.validate_on_submit():
+		print("Body: ", form.post.data, "Author: ", current_user, "and: ", current_user.username)
+		post = Post(body=form.post.data, author=current_user)
+		db.session.add(post)
+		db.session.commit()
+		flash('Your post is now live!')
+		return redirect(url_for('index', page=page))
+
+	posts = current_user.followed_posts().paginate(page, app.config['POSTS_PER_PAGE'], False)
+	next_url = url_for('index', page=posts.next_num) if posts.has_next else None
+	prev_url = url_for('index', page=posts.prev_num) if posts.has_prev else None
+	return render_template('index.html', title="Main Page", posts=posts.items, form=form, next_url=next_url, prev_url=prev_url, page=page)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -72,17 +81,18 @@ def logout():
 def user(username):
 
 	user = User.query.filter_by(username=username).first_or_404()
-	posts = [
-		{"author": user, "body": "Test Post 1"},
-		{"author": user, "body": "Test Post 2"}
-	]
-	return render_template('user.html', title="title", user=user, posts=posts)
+	page = request.args.get('page', 1, type=int)
+	posts = user.posts.order_by(Post.timestamp.desc()).paginate(page, app.config['POSTS_PER_PAGE'], False)
+	prev_url = url_for('user', username=user.username, page=posts.prev_num) if posts.has_prev else None
+	next_url = url_for('user', username=user.username, page=posts.next_num) if posts.has_next else None
+	return render_template('user.html', title="title", user=user, posts=posts.items, prev_url=prev_url, next_url=next_url, page=page)
 
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
 	form = EditProfileForm(current_user.username)
+
 	if form.validate_on_submit():
 		current_user.username = form.username.data
 		current_user.about_me = form.about_me.data
@@ -96,3 +106,64 @@ def edit_profile():
 		form.about_me.data = current_user.about_me
 
 	return render_template('edit_profile.html', title="Edit Profile", form=form)
+
+
+@app.route('/follow/<username>')
+@login_required
+def follow(username):
+	user = User.query.filter_by(username=username).first()
+	if not user:
+		flash('User {} not found'.format(username))
+		return redirect(url_for('index'))
+
+	if current_user.username == username:
+		flash('You cannot follow yourself!')
+		return redirect(url_for('user', username=username))
+
+	current_user.follow(user)
+	db.session.commit()
+	flash('You are following {}'.format(username))
+	return redirect(url_for('user', username=username))
+
+
+@app.route('/unfollow/<username>')
+@login_required
+def unfollow(username):
+	user = User.query.filter_by(username=username).first()
+
+	if user is None:
+		flash('User {} not found'.format(username))
+		return redirect(url_for('index'))
+
+	if current_user == user:
+		flash('You cannot unfollow yourself')
+		return redirect(url_for('user', username=username))
+
+	current_user.unfollow(user)
+	db.session.commit()
+	flash('You are no longer following {}'.format(username))
+	return redirect(url_for('user', username=username))
+
+
+@app.route('/following/<username>')
+@login_required
+def following(username):
+	user = User.query.filter_by(username=username).first()
+	return render_template('following.html', title='Following', user=user)
+
+
+@app.route('/followers/<username>')
+@login_required
+def followers(username):
+	user = User.query.filter_by(username=username).first()
+	return render_template('followers.html', title='Followers', user=user)
+
+
+@app.route('/explore')
+@login_required
+def explore():
+	page = request.args.get('page', 1, type=int)
+	posts = Post.query.order_by(Post.timestamp.desc()).paginate(page, app.config['POSTS_PER_PAGE'], False)
+	next_url = url_for('explore', page=posts.next_num) if posts.has_next else None
+	prev_url = url_for('explore', page=posts.prev_num) if posts.has_prev else None
+	return render_template('index.html', title='Explore', posts=posts.items, next_url=next_url, prev_url=prev_url, page=page)
