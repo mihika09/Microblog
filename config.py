@@ -6,6 +6,10 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class Config(object):
 	SECRET_KEY = os.environ.get('SECRET_KEY') or os.urandom(32)
 	SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'app.db')
+	print()
+	print("os.environ.get('DATABASE_URL')", os.environ.get('DATABASE_URL'))
+	print("DATABASE_URI: ", SQLALCHEMY_DATABASE_URI)
+	print()
 	SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 	MAIL_SERVER = os.environ.get('MAIL_SERVER')
@@ -14,5 +18,6 @@ class Config(object):
 	MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
 	MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
 	ADMINS = ['ginnyw0099@gmail.com']
+	LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT')
 
 	POSTS_PER_PAGE = 3
