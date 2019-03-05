@@ -14,9 +14,9 @@ followers = db.Table('followers', db.Column('follower_id', db.Integer, db.Foreig
 
 class User(UserMixin, db.Model):
 	id = db.Column(db.Integer, primary_key=True)
-	username = db.Column(db.String(64), unique=True, index=True)
+	username = db.Column(db.String(128), unique=True, index=True)
 	email = db.Column(db.String(128), unique=True, index=True)
-	password = db.Column(db.String(128), unique=True, index=True)
+	password = db.Column(db.String(200), unique=True, index=True)
 	about_me = db.Column(db.String(140))
 	last_seen = db.Column(db.DateTime, default=datetime.utcnow)
 	posts = db.relationship('Post', backref='author', lazy='dynamic')
