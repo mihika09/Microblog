@@ -7,7 +7,7 @@
             <td>
                 <h3>{{ user.username }}</h3>
                 {% if user.last_seen %}
-                    Last seen on: {{ user.last_seen }}
+                    Last seen on: {{ moment(user.last_seen).format('LLL') }}
                 {% endif %}
                 {% if user.about_me %}
                     <p>{{ user.about_me }}</p>

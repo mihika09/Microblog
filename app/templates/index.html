@@ -1,14 +1,16 @@
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 {% block app_content %}
-    <h1>Explore</h1>
-    <hr>
     {% if form %}
+        <h1>{{ _('Hi, %(username)s!', username=current_user.username) }}</h1>
         <div class="row">
             <div class="col-md-4">
                 {{ wtf.quick_form(form) }}
             </div>
         </div>
+    {% else %}
+        <h1>Explore</h1>
+        <hr>
     {% endif %}
     <br>
     <p>Page: {{ page }}</p>
