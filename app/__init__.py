@@ -12,6 +12,7 @@ import os
 from flask_moment import Moment
 from flask_babel import Babel, lazy_gettext as _l
 from flask import request
+from elasticsearch import Elasticsearch
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -34,11 +35,13 @@ from app import routes, models, errors
 
 @babel.localeselector
 def get_locale():
-	return request.accept_languages.best_match(app.config['LANGUAGES'])
-	# return 'es'
+	# return request.accept_languages.best_match(app.config['LANGUAGES'])
+	return 'es'
 
 
 def create_app(config_class=Config):
+
+	app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) if app.config['ELASTICSEARCH_URL'] else None
 
 	if not app.debug or app.testing:
 

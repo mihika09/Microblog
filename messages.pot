@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-03-05 15:51+0530\n"
+"POT-Creation-Date: 2019-03-06 09:28+0530\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,11 +21,11 @@ msgstr ""
 msgid "Please login to access this page"
 msgstr ""
 
-#: app/forms.py:11 app/forms.py:19 app/forms.py:37
+#: app/forms.py:11 app/forms.py:19 app/forms.py:38
 msgid "Username"
 msgstr ""
 
-#: app/forms.py:12 app/forms.py:21 app/forms.py:66
+#: app/forms.py:12 app/forms.py:21 app/forms.py:67
 msgid "Password"
 msgstr ""
 
@@ -37,47 +37,51 @@ msgstr ""
 msgid "Sign In"
 msgstr ""
 
-#: app/forms.py:20 app/forms.py:61
+#: app/forms.py:20 app/forms.py:62
 msgid "Email"
 msgstr ""
 
-#: app/forms.py:22 app/forms.py:67
+#: app/forms.py:22 app/forms.py:23 app/forms.py:68
 msgid "Retype Password"
 msgstr ""
 
-#: app/forms.py:23 app/templates/register.html:5
+#: app/forms.py:24 app/templates/register.html:5
 msgid "Register"
 msgstr ""
 
-#: app/forms.py:28
+#: app/forms.py:29
 msgid "Username already exists. Please enter another username"
 msgstr ""
 
-#: app/forms.py:33
+#: app/forms.py:34
 msgid "Email already registered. Please try and login"
 msgstr ""
 
-#: app/forms.py:38
+#: app/forms.py:39
 msgid "About me"
 msgstr ""
 
-#: app/forms.py:39 app/forms.py:62
+#: app/forms.py:39
+msgid "About Me"
+msgstr ""
+
+#: app/forms.py:40 app/forms.py:63
 msgid "Submit"
 msgstr ""
 
-#: app/forms.py:52
+#: app/forms.py:53
 msgid "Please use  a different username"
 msgstr ""
 
-#: app/forms.py:56
+#: app/forms.py:57
 msgid "Say Something!"
 msgstr ""
 
-#: app/forms.py:57
+#: app/forms.py:58
 msgid "Post!"
 msgstr ""
 
-#: app/forms.py:68
+#: app/forms.py:69
 msgid "Request Password Reset"
 msgstr ""
 
@@ -167,5 +171,10 @@ msgstr ""
 
 #: app/templates/login.html:13
 msgid "Click here to reset"
+msgstr ""
+
+#: app/templates/reset_password.html:4
+#: app/templates/reset_password_request.html:5
+msgid "Reset Password"
 msgstr ""
 

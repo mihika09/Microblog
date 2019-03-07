@@ -1,5 +1,5 @@
 from app import app
-from flask import flash, redirect, render_template, url_for, request
+from flask import flash, redirect, render_template, url_for, request, g
 from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm, ResetPasswordRequestForm, \
 	ResetPasswordForm
 from app.models import User, Post
@@ -8,11 +8,13 @@ from flask_login import login_required, login_user, logout_user, current_user
 from werkzeug.urls import url_parse
 from datetime import datetime
 from app.email import send_password_reset_email
-from flask_babel import _
+from flask_babel import _, get_locale
+from guess_language import guess_language
 
 
 @app.before_request
 def before_request():
+	g.locale = str(get_locale())
 	if current_user.is_authenticated:
 		current_user.last_seen = datetime.utcnow()
 		db.session.commit()
@@ -27,7 +29,11 @@ def index():
 	page = request.args.get('page', 1, type=int)
 	if form.validate_on_submit():
 		print("Body: ", form.post.data, "Author: ", current_user, "and: ", current_user.username)
-		post = Post(body=form.post.data, author=current_user)
+		language = guess_language(form.post.data)
+		if language == 'UNKNOWN' or len(language) > 5:
+			language = ''
+
+		post = Post(body=form.post.data, author=current_user, language=language)
 		db.session.add(post)
 		db.session.commit()
 		flash(_('Your post is now live!'))

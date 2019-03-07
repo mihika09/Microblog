@@ -17,5 +17,5 @@ def send_password_reset_email(user):
 			html_body=render_template('email/reset_password.html', user=user, token=token))
 
 
-# r | https://git.heroku.com/microblog-mihika.git
+# https://microblog-mihika.herokuapp.com/ | https://git.heroku.com/microblog-mihika.git
 
