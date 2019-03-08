@@ -20,11 +20,11 @@ def login():
 		user = User.query.filter_by(username=form.username.data).first()
 		if user is None or not user.check_password(form.password.data):
 			flash(_('Invalid username or password'))
-			return redirect(url_for('login'))
+			return redirect(url_for('auth.login'))
 		login_user(user, remember=form.remember_me.data)
 		next_page = request.args.get('next')
 		if not next_page or url_parse(next_page).netloc != '':
-			next_page = url_for('index')
+			next_page = url_for('main.index')
 		print("next_page: ", next_page)
 		return redirect(next_page)
 
@@ -44,7 +44,7 @@ def register():
 		db.session.add(user)
 		db.session.commit()
 		flash(_('You have successfully registered. Please login to continue'))
-		return redirect(url_for('login'))
+		return redirect(url_for('auth.login'))
 
 	return render_template('auth/register.html', title=_('Register'), form=form)
 
@@ -81,7 +81,7 @@ def reset_password(token):
 		return redirect(url_for('main.index'))
 	user = User.verify_password_reset_token(token)
 	if not user:
-		return redirect(url_for('index'))
+		return redirect(url_for('main.index'))
 	form = ResetPasswordForm()
 	if form.validate_on_submit():
 		user.set_password(form.password.data)
