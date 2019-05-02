@@ -22,6 +22,7 @@ Need to add the following environment variables before running the application:
 - MAIL_USE_TLS
 - MAIL_USERNAME
 - MAIL_PASSWORD
+- FLASK_APP = microblog.py
 
 ## Test
 
